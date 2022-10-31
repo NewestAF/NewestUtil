@@ -30,7 +30,7 @@ public class ConfigurationManager {
         this.prefix = builder.prefix;
         this.listener = builder.listener;
 
-        this.config = builder.config;
+        this.config = plugin.getConfig();
         config.options().copyDefaults(true);
 
         this.descConfig = new MemoryConfiguration();
@@ -286,17 +286,12 @@ public class ConfigurationManager {
     public static class ConfigurationManagerBuilder {
 
         private final Plugin plugin;
-        private Configuration config;
         private ConfigurationListener listener;
         private String prefix;
         private boolean validate;
 
         public ConfigurationManagerBuilder(Plugin plugin) {
             this.plugin = plugin;
-        }
-        public ConfigurationManagerBuilder config(Configuration config) {
-            this.config = config;
-            return this;
         }
 
         public ConfigurationManagerBuilder listener(ConfigurationListener listener) {
