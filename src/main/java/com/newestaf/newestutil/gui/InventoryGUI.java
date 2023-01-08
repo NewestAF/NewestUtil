@@ -1,4 +1,4 @@
-package com.newestaf.newestutil.gui;
+package com.newestaf.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,14 +8,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-@SuppressWarnings("deprecation")
 public class InventoryGUI implements Listener, InventoryHolder {
+
     private final Plugin plugin;
     private final String title;
     private Inventory inventory;
@@ -108,6 +110,7 @@ public class InventoryGUI implements Listener, InventoryHolder {
 
     @EventHandler
     public void onItemClick(InventoryClickEvent event) {
+        //noinspection deprecation
         if (!event.getView().getTitle().equals(this.title) || event.getCurrentItem() == null) {
             return;
         }
@@ -126,9 +129,7 @@ public class InventoryGUI implements Listener, InventoryHolder {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) {
-            this.removeAllClickEvents();
-        }
+
     }
 
 
