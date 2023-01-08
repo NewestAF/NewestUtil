@@ -1,4 +1,4 @@
-package com.newestaf.gui;
+package com.newestaf.newestutil.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
+@SuppressWarnings("deprecation")
 public class InventoryGUI implements Listener, InventoryHolder {
 
     private final Plugin plugin;
@@ -110,7 +111,6 @@ public class InventoryGUI implements Listener, InventoryHolder {
 
     @EventHandler
     public void onItemClick(InventoryClickEvent event) {
-        //noinspection deprecation
         if (!event.getView().getTitle().equals(this.title) || event.getCurrentItem() == null) {
             return;
         }
@@ -129,7 +129,9 @@ public class InventoryGUI implements Listener, InventoryHolder {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-
+        if (event.getView().getTitle().equals(this.title)) {
+            removeAllClickEvents();
+        }
     }
 
 
