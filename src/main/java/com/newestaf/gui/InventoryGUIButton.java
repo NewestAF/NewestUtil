@@ -14,14 +14,11 @@ public class InventoryGUIButton {
 
     private String name;
     private String description;
-    private Material material;
-    private int slot;
     private ItemStack item;
     private boolean locked;
-    private InventoryGUI parentGUI;
     private Consumer<InventoryClickEvent> onClick;
 
-    public InventoryGUIButton(InventoryGUI parentGUI, String name, String description, Material material) {
+    public InventoryGUIButton(String name, String description, Material material) {
         ItemStack newItem = new ItemStack(material, 1);
         ItemMeta meta = newItem.getItemMeta();
         if (name != null) {
@@ -33,26 +30,22 @@ public class InventoryGUIButton {
             String[] lines = description.split("\n");
             meta.setLore(Arrays.asList(lines));
         }
-        this.material = material;
         if (material != Material.AIR) {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             newItem.setItemMeta(meta);
         }
         this.item = newItem;
         this.locked = true;
-        this.parentGUI = parentGUI;
-        this.slot = parentGUI.getSlot();
         this.onClick = null;
     }
 
     public InventoryGUIButton(
-            InventoryGUI parentGUI,
             String name,
             String description,
             Material material,
             boolean locked
     ) {
-        this(parentGUI, name, description, material);
+        this(name, description, material);
         this.locked = locked;
     }
 
@@ -65,7 +58,6 @@ public class InventoryGUIButton {
         ItemMeta meta = this.item.getItemMeta();
         meta.setDisplayName(name);
         this.item.setItemMeta(meta);
-        this.parentGUI.getInventory().setItem(this.slot, this.item);
     }
 
     public String getDescription() {
@@ -78,11 +70,6 @@ public class InventoryGUIButton {
         String[] lines = description.split("\n");
         meta.setLore(Arrays.asList(lines));
         this.item.setItemMeta(meta);
-        this.parentGUI.getInventory().setItem(this.slot, this.item);
-    }
-
-    public Material getMaterial() {
-        return this.material;
     }
 
     public ItemStack getItem() {
@@ -91,7 +78,6 @@ public class InventoryGUIButton {
 
     public void setItem(ItemStack item) {
         this.item = item.clone();
-        this.parentGUI.getInventory().setItem(this.slot, item);
     }
 
     public boolean isLocked() {
@@ -102,11 +88,7 @@ public class InventoryGUIButton {
         this.locked = locked;
     }
 
-    public InventoryGUI getParentGUI() {
-        return parentGUI;
-    }
-
-    public void OnClick(InventoryClickEvent event) {
+    public void onClick(InventoryClickEvent event) {
         if (onClick != null) {
             onClick.accept(event);
         }
@@ -123,6 +105,6 @@ public class InventoryGUIButton {
     public boolean equals(InventoryGUIButton compare) {
         return this.name.equals(compare.getName())
                 && this.description.equals(compare.getDescription())
-                && this.material == compare.material;
+                && this.item.getType() == compare.item.getType();
     }
 }

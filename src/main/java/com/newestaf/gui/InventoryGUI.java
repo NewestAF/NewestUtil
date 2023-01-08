@@ -2,9 +2,14 @@ package com.newestaf.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -13,17 +18,15 @@ import java.util.HashMap;
 
 public class InventoryGUI implements Listener, InventoryHolder {
 
-    private final Player player;
+    private final Plugin plugin;
     private final String title;
     private Inventory inventory;
     private final HashMap<Integer, InventoryGUIButton> buttons;
     private int slot;
-    private final int maxItems;
-    private final boolean locked;
-    private BukkitRunnable runnable;
 
-    public InventoryGUI(Player player, String title, int rows, boolean locked) {
-        this.player = player;
+    public InventoryGUI(Plugin plugin, String title, int rows) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.title = title;
         if (rows < 1) {
             rows = 1;
@@ -35,15 +38,6 @@ public class InventoryGUI implements Listener, InventoryHolder {
         this.inventory = Bukkit.createInventory(null, 9 * rows, title);
         this.buttons = new HashMap<>();
         this.slot = 0;
-        this.maxItems = (9 * rows) - 1;
-        this.locked = locked;
-        this.runnable = null;
-//        EarthMapUtil.getInstance().getMenuManager().addMenu(player.getUniqueId(), this);
-    }
-
-
-    public Player getPlayer() {
-        return player;
     }
 
     public String getTitle() {
@@ -59,16 +53,12 @@ public class InventoryGUI implements Listener, InventoryHolder {
         this.inventory = inventory;
     }
 
-    public boolean isLocked() {
-        return locked;
-    }
-
     public HashMap<Integer, InventoryGUIButton> getButtons() {
         return buttons;
     }
 
     public InventoryGUIButton addButton(InventoryGUIButton button) {
-        if (this.slot <= this.maxItems) {
+        if (this.slot <= this.inventory.getSize()) {
             this.inventory.setItem(slot, button.getItem());
             this.buttons.put(slot, button);
             slot++;
@@ -88,31 +78,60 @@ public class InventoryGUI implements Listener, InventoryHolder {
         return button;
     }
 
+    public void setButtonName(int slot, String name) {
+        InventoryGUIButton button = this.buttons.get(slot);
+        button.setName(name);
+        this.inventory.setItem(slot, button.getItem());
+    }
+
+    public void setButtonDescription(int slot, String description) {
+        InventoryGUIButton button = this.buttons.get(slot);
+        button.setDescription(description);
+        this.inventory.setItem(slot, button.getItem());
+    }
+
+    public void setButtonItem(int slot, ItemStack itemStack) {
+        InventoryGUIButton button = this.buttons.get(slot);
+        button.setItem(itemStack);
+        this.inventory.setItem(slot, button.getItem());
+    }
+
     public int getSlot() {
         return slot;
     }
-
-    public BukkitRunnable getRunnable() {
-        return runnable;
-    }
-
-    public void setRunnable(Plugin plugin, BukkitRunnable runnable) {
-        this.runnable = runnable;
-        this.runnable.runTaskTimer(plugin, 2, 2);
-    }
-
-    public void stopRunnable() {
-        this.runnable.cancel();
-    }
-
-    public void showMenu() {
-        this.player.openInventory(this.inventory);
+    public void showMenu(Player player) {
+        player.openInventory(this.inventory);
     }
 
     public void removeAllClickEvents() {
         for (int i = 0; i < this.slot; i++)
             this.buttons.get(i).setOnClick(null);
     }
+
+    @EventHandler
+    public void onItemClick(InventoryClickEvent event) {
+        //noinspection deprecation
+        if (!event.getView().getTitle().equals(this.title) || event.getCurrentItem() == null) {
+            return;
+        }
+        InventoryGUIButton button = this.buttons.get(event.getRawSlot());
+        if (button == null) {
+            return;
+        }
+        event.setCancelled(true);
+        if (button.isLocked()) {
+            return;
+        }
+        if (button.getOnClick() != null) {
+            button.onClick(event);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+
+    }
+
 
 
 }
