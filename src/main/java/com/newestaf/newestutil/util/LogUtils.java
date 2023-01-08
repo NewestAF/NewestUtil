@@ -1,4 +1,4 @@
-package com.newestaf.util;
+package com.newestaf.newestutil.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;;

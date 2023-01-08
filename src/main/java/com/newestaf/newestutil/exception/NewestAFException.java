@@ -1,4 +1,4 @@
-package com.newestaf.exception;
+package com.newestaf.newestutil.exception;
 
 public class NewestAFException extends RuntimeException {
 

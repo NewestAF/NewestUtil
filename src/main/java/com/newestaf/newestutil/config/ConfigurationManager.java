@@ -1,8 +1,8 @@
-package com.newestaf.config;
+package com.newestaf.newestutil.config;
 
-import com.newestaf.annotation.FactoryMethod;
-import com.newestaf.exception.NewestAFException;
-import com.newestaf.util.Debugger;
+import com.newestaf.newestutil.annotation.FactoryMethod;
+import com.newestaf.newestutil.exception.NewestAFException;
+import com.newestaf.newestutil.util.Debugger;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.plugin.Plugin;

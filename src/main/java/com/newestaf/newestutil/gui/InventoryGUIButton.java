@@ -1,4 +1,4 @@
-package com.newestaf.gui;
+package com.newestaf.newestutil.gui;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;

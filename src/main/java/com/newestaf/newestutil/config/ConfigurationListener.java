@@ -1,4 +1,4 @@
-package com.newestaf.config;
+package com.newestaf.newestutil.config;
 
 public interface ConfigurationListener {
 
